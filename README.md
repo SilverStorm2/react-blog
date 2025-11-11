@@ -33,6 +33,13 @@ Run everything with Yarn (preferred) or npm.
 4. Hit **Run** – Replit will install dependencies, use the pre-built files from `build/`, and serve them via HTTP.
 5. Copy the public URL Replit shows and place it in the “Live demo” section above.
 
+## Deploying to Vercel
+
+1. Install the Vercel CLI locally (`npm i -g vercel`) and authenticate via `vercel login`, or connect the GitHub repo inside the Vercel dashboard.
+2. The included `vercel.json` already instructs Vercel to run `npm run build`, publish the `build/` directory, and rewrite every route back to `index.html` so React Router handles navigation.
+3. From the repo root run `vercel --prod` (or trigger **Deploy** in the dashboard). The CLI will install dependencies, execute the build, and upload the static bundle automatically.
+4. After the deployment finishes, copy the production URL that Vercel prints and add it to the **Live demo** section at the top.
+
 ## Project structure
 
 ```
