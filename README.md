@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# Blog.app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Modern React + Redux blog playground that lets you browse articles, read their details, add new entries, edit existing ones, and remove those you no longer need. The UI is built on React Bootstrap components and the data layer is backed by a tiny Redux store with selectors for each view.
 
-## Available Scripts
+## Live demo
 
-In the project directory, you can run:
+> Replace the placeholder below with the deployed Replit URL after you run `http-server ./build` on your Replit instance.
+>
+> https://your-replit-url.replit.app
 
-### `npm start`
+## Tech stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React 19 with React Router 6 and Redux for routing and state management.
+- React Bootstrap for layout and components.
+- Sass for custom styling.
+- `http-server` serves the production-ready bundle (perfect for Replit or any static host).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Available scripts
 
-### `npm test`
+Run everything with Yarn (preferred) or npm.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Command | Description |
+| ------- | ----------- |
+| `yarn start` | Launches CRA dev server on <http://localhost:3000>. |
+| `yarn build` | Produces an optimized build inside `build/`. |
+| `yarn serve:prod` | (Optional) Add `\"serve:prod\": \"http-server ./build\"` to `package.json` or run `npx http-server ./build` to preview the production bundle locally. |
 
-### `npm run build`
+## Deploying to Replit
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Push this repository to GitHub.
+2. Create a new Replit project from the repo.
+3. In the “Run” command field enter `http-server ./build`.
+4. Hit **Run** – Replit will install dependencies, use the pre-built files from `build/`, and serve them via HTTP.
+5. Copy the public URL Replit shows and place it in the “Live demo” section above.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Project structure
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+src/
+├── components/
+│   ├── features/   # shared, state-aware widgets like forms and modals
+│   ├── pages/      # route-level views (Home, PostAdd, PostEdit, SinglePost, etc.)
+│   └── views/      # layout pieces such as NavBar, Header, Footer
+├── styles/         # global SCSS overrides
+├── postsRedux.js   # selectors + reducer (add/edit/remove posts)
+├── initialState.js # seed data
+└── store.js        # Redux store setup
+```
 
-### `npm run eject`
+## Development notes
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Posts are stored in Redux, seeded via `initialState.js`, and can be created/edited/deleted through dedicated forms.
+- Shared `<PostForm>` handles all controlled form logic; `<AddPostForm>` and `<EditPostForm>` simply inject submit handlers.
+- Deleting a post uses a confirmation modal and navigates back to the home screen automatically.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## License
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT © Blog.app
