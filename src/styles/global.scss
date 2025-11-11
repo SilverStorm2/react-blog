@@ -1,0 +1,13 @@
+body {
+  background: #d7d7d7;
+}
+
+.navbar .nav-link {
+  color: #f1f1f1;
+  transition: color 0.2s ease;
+}
+
+.navbar .nav-link.active {
+  color: #ffc107;
+  font-weight: 600;
+}
