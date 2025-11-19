@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Button } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
 import Editor from '../common/Editor';
 
 const normalizeDate = value => {
@@ -30,25 +31,72 @@ const PostForm = ({ action, actionText, ...props }) => {
     initialShortDescription
   );
   const [content, setContent] = useState(initialContent);
+  const [contentError, setContentError] = useState(false);
+  const [dateError, setDateError] = useState(false);
   const quillRef = useRef(null);
+  const {
+    register,
+    handleSubmit: validate,
+    formState: { errors },
+  } = useForm();
 
   const handleTextChange = () => {
-    if (quillRef.current) {
-      setContent(quillRef.current.root.innerHTML);
+    if (!quillRef.current) return;
+    const editorHtml = quillRef.current.root.innerHTML;
+    const plainText = quillRef.current.getText().trim();
+
+    setContent(editorHtml);
+    if (plainText && contentError) {
+      setContentError(false);
     }
   };
 
   const handleDateChange = event => {
     const { value } = event.target;
-    setPublishedDate(value ? new Date(value) : null);
+    const dateValue = value ? new Date(value) : null;
+    setPublishedDate(dateValue);
+    if (dateValue && dateError) {
+      setDateError(false);
+    }
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  const titleRegister = register('title', {
+    required: 'Title is required',
+    minLength: {
+      value: 3,
+      message: 'Title is too short (min is 3)',
+    },
+  });
+  const authorRegister = register('author', {
+    required: 'Author is required',
+    minLength: {
+      value: 3,
+      message: 'Author is too short (min is 3)',
+    },
+  });
+  const shortDescriptionRegister = register('shortDescription', {
+    required: 'Short description is required',
+    minLength: {
+      value: 20,
+      message: 'Short description is too short (min is 20)',
+    },
+  });
 
+  const handleSubmit = () => {
     const editorHtml = quillRef.current
       ? quillRef.current.root.innerHTML
       : content;
+    const plainContent = quillRef.current
+      ? quillRef.current.getText().trim()
+      : editorHtml.replace(/<[^>]*>/g, '').trim();
+
+    const isContentValid = plainContent !== '';
+    const isDateValid = Boolean(publishedDate);
+
+    setContentError(!isContentValid);
+    setDateError(!isDateValid);
+
+    if (!isContentValid || !isDateValid) return;
 
     const payload = {
       title: title.trim(),
@@ -58,40 +106,44 @@ const PostForm = ({ action, actionText, ...props }) => {
       content: editorHtml.trim(),
     };
 
-    const hasEmptyField =
-      payload.title === '' ||
-      payload.author === '' ||
-      !payload.publishedDate ||
-      payload.shortDescription === '';
-
-    const plainContent = quillRef.current
-      ? quillRef.current.getText().trim()
-      : editorHtml.replace(/<[^>]*>/g, '').trim();
-
-    if (hasEmptyField || plainContent === '') return;
-
     action(payload);
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={validate(handleSubmit)}>
       <Form.Group className="mb-3" controlId="postFormTitle">
         <Form.Label>Title</Form.Label>
         <Form.Control
+          {...titleRegister}
           value={title}
-          onChange={e => setTitle(e.target.value)}
+          onChange={e => {
+            titleRegister.onChange?.(e);
+            setTitle(e.target.value);
+          }}
           placeholder="Enter title"
-          required
         />
+        {errors.title && (
+          <small className="d-block form-text text-danger mt-2">
+            {errors.title.message}
+          </small>
+        )}
       </Form.Group>
       <Form.Group className="mb-3" controlId="postFormAuthor">
         <Form.Label>Author</Form.Label>
         <Form.Control
+          {...authorRegister}
           value={author}
-          onChange={e => setAuthor(e.target.value)}
+          onChange={e => {
+            authorRegister.onChange?.(e);
+            setAuthor(e.target.value);
+          }}
           placeholder="Enter author"
-          required
         />
+        {errors.author && (
+          <small className="d-block form-text text-danger mt-2">
+            {errors.author.message}
+          </small>
+        )}
       </Form.Group>
       <Form.Group className="mb-3" controlId="postFormPublished">
         <Form.Label>Published</Form.Label>
@@ -99,19 +151,31 @@ const PostForm = ({ action, actionText, ...props }) => {
           type="date"
           value={formatDateInputValue(publishedDate)}
           onChange={handleDateChange}
-          required
         />
+        {dateError && (
+          <small className="d-block form-text text-danger mt-2">
+            Publication date is required
+          </small>
+        )}
       </Form.Group>
       <Form.Group className="mb-3" controlId="postFormShortDescription">
         <Form.Label>Short description</Form.Label>
         <Form.Control
+          {...shortDescriptionRegister}
           as="textarea"
           rows={2}
           value={shortDescription}
-          onChange={e => setShortDescription(e.target.value)}
+          onChange={e => {
+            shortDescriptionRegister.onChange?.(e);
+            setShortDescription(e.target.value);
+          }}
           placeholder="Brief summary"
-          required
         />
+        {errors.shortDescription && (
+          <small className="d-block form-text text-danger mt-2">
+            {errors.shortDescription.message}
+          </small>
+        )}
       </Form.Group>
       <Form.Group className="mb-3" controlId="postFormContent">
         <Form.Label>Main content</Form.Label>
@@ -120,6 +184,11 @@ const PostForm = ({ action, actionText, ...props }) => {
           defaultValue={initialContent}
           onTextChange={handleTextChange}
         />
+        {contentError && (
+          <small className="d-block form-text text-danger mt-2">
+            Content can't be empty
+          </small>
+        )}
       </Form.Group>
       <Button variant="primary" type="submit">
         {actionText}
