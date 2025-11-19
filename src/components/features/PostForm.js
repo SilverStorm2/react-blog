@@ -1,28 +1,74 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Button } from 'react-bootstrap';
+import Editor from '../common/Editor';
+
+const normalizeDate = value => {
+  if (!value) return null;
+  const parsedValue = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(parsedValue.getTime()) ? null : parsedValue;
+};
+
+const formatDateInputValue = date =>
+  date ? date.toISOString().split('T')[0] : '';
 
 const PostForm = ({ action, actionText, ...props }) => {
-  const [title, setTitle] = useState(props.title || '');
-  const [author, setAuthor] = useState(props.author || '');
-  const [publishedDate, setPublishedDate] = useState(props.publishedDate || '');
-  const [shortDescription, setShortDescription] = useState(
-    props.shortDescription || ''
+  const {
+    title: initialTitle = '',
+    author: initialAuthor = '',
+    publishedDate: initialPublishedDate = null,
+    shortDescription: initialShortDescription = '',
+    content: initialContent = '',
+  } = props;
+
+  const [title, setTitle] = useState(initialTitle);
+  const [author, setAuthor] = useState(initialAuthor);
+  const [publishedDate, setPublishedDate] = useState(() =>
+    normalizeDate(initialPublishedDate)
   );
-  const [content, setContent] = useState(props.content || '');
+  const [shortDescription, setShortDescription] = useState(
+    initialShortDescription
+  );
+  const [content, setContent] = useState(initialContent);
+  const quillRef = useRef(null);
+
+  const handleTextChange = () => {
+    if (quillRef.current) {
+      setContent(quillRef.current.root.innerHTML);
+    }
+  };
+
+  const handleDateChange = event => {
+    const { value } = event.target;
+    setPublishedDate(value ? new Date(value) : null);
+  };
 
   const handleSubmit = event => {
     event.preventDefault();
 
+    const editorHtml = quillRef.current
+      ? quillRef.current.root.innerHTML
+      : content;
+
     const payload = {
       title: title.trim(),
       author: author.trim(),
-      publishedDate: publishedDate.trim(),
+      publishedDate,
       shortDescription: shortDescription.trim(),
-      content: content.trim(),
+      content: editorHtml.trim(),
     };
 
-    if (Object.values(payload).some(value => value === '')) return;
+    const hasEmptyField =
+      payload.title === '' ||
+      payload.author === '' ||
+      !payload.publishedDate ||
+      payload.shortDescription === '';
+
+    const plainContent = quillRef.current
+      ? quillRef.current.getText().trim()
+      : editorHtml.replace(/<[^>]*>/g, '').trim();
+
+    if (hasEmptyField || plainContent === '') return;
 
     action(payload);
   };
@@ -50,9 +96,9 @@ const PostForm = ({ action, actionText, ...props }) => {
       <Form.Group className="mb-3" controlId="postFormPublished">
         <Form.Label>Published</Form.Label>
         <Form.Control
-          value={publishedDate}
-          onChange={e => setPublishedDate(e.target.value)}
-          placeholder="Enter publish date"
+          type="date"
+          value={formatDateInputValue(publishedDate)}
+          onChange={handleDateChange}
           required
         />
       </Form.Group>
@@ -69,13 +115,10 @@ const PostForm = ({ action, actionText, ...props }) => {
       </Form.Group>
       <Form.Group className="mb-3" controlId="postFormContent">
         <Form.Label>Main content</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={5}
-          value={content}
-          onChange={e => setContent(e.target.value)}
-          placeholder="Write your article..."
-          required
+        <Editor
+          ref={quillRef}
+          defaultValue={initialContent}
+          onTextChange={handleTextChange}
         />
       </Form.Group>
       <Button variant="primary" type="submit">
@@ -90,7 +133,10 @@ PostForm.propTypes = {
   actionText: PropTypes.string.isRequired,
   title: PropTypes.string,
   author: PropTypes.string,
-  publishedDate: PropTypes.string,
+  publishedDate: PropTypes.oneOfType([
+    PropTypes.instanceOf(Date),
+    PropTypes.string,
+  ]),
   shortDescription: PropTypes.string,
   content: PropTypes.string,
 };

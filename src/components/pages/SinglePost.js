@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link, Navigate, useNavigate } from 'react-router-dom';
 import { Row, Col, Button } from 'react-bootstrap';
 import { getPostById, removePost } from '../../postsRedux';
+import dateToStr from '../../utils/dateToStr';
 import CancelPostModal from '../features/CancelPostModal';
 
 const SinglePost = () => {
@@ -47,9 +48,9 @@ const SinglePost = () => {
           <strong>Author:</strong> {post.author}
         </p>
         <p>
-          <strong>Published:</strong> {post.publishedDate}
+          <strong>Published:</strong> {dateToStr(post.publishedDate)}
         </p>
-        <p>{post.content}</p>
+        <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </article>
       <CancelPostModal
         show={showModal}
