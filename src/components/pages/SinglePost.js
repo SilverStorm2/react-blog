@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link, Navigate, useNavigate } from 'react-router-dom';
 import { Row, Col, Button } from 'react-bootstrap';
 import { getPostById, removePost } from '../../postsRedux';
+import { getCategoryById } from '../../categoriesRedux';
 import dateToStr from '../../utils/dateToStr';
 import CancelPostModal from '../features/CancelPostModal';
 
@@ -10,6 +11,9 @@ const SinglePost = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const post = useSelector(state => getPostById(state, id));
+  const category = useSelector(state =>
+    getCategoryById(state, post?.category)
+  );
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
@@ -49,6 +53,9 @@ const SinglePost = () => {
         </p>
         <p>
           <strong>Published:</strong> {dateToStr(post.publishedDate)}
+        </p>
+        <p>
+          <strong>Category:</strong> {category?.name || 'Unknown'}
         </p>
         <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </article>

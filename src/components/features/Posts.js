@@ -1,11 +1,19 @@
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Card, Button } from 'react-bootstrap';
-import { getAllPosts } from '../../postsRedux';
+import { getAllPosts, getPostsByCategory } from '../../postsRedux';
+import { getAllCategories } from '../../categoriesRedux';
 import dateToStr from '../../utils/dateToStr';
 
-const Posts = () => {
-  const posts = useSelector(getAllPosts);
+const Posts = ({ categoryId }) => {
+  const posts = useSelector(state =>
+    categoryId ? getPostsByCategory(state, categoryId) : getAllPosts(state)
+  );
+  const categories = useSelector(getAllCategories);
+
+  const getCategoryName = id =>
+    categories.find(category => category.id === id)?.name || 'Unknown';
 
   if (!posts || posts.length === 0) {
     return <p className="text-muted">No posts available yet.</p>;
@@ -21,8 +29,11 @@ const Posts = () => {
               <Card.Text className="mb-1">
                 <strong>Author:</strong> {post.author}
               </Card.Text>
-              <Card.Text className="mb-3">
+              <Card.Text className="mb-1">
                 <strong>Published:</strong> {dateToStr(post.publishedDate)}
+              </Card.Text>
+              <Card.Text className="mb-3">
+                <strong>Category:</strong> {getCategoryName(post.category)}
               </Card.Text>
               <Card.Text className="flex-grow-1">
                 {post.shortDescription}
@@ -41,3 +52,7 @@ const Posts = () => {
 };
 
 export default Posts;
+
+Posts.propTypes = {
+  categoryId: PropTypes.string,
+};

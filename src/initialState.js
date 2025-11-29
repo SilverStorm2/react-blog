@@ -3,18 +3,20 @@ const initialState = {
     {
       id: '1',
       title: 'Effective Prompt Engineering',
-      shortDescription: 'Boost productivity with better AI prompts.',
-      content: 'Prompt engineering enables developers to guide AI systems efficiently. This article explains how to structure prompts to reduce ambiguity and improve output relevance.',
+      shortDescription: 'Boost productivity with better AI prompts on real projects.',
+      content: 'Prompt engineering enables developers to guide AI systems efficiently. This article explains how to structure prompts to reduce ambiguity, improve output relevance, and stay productive with everyday tasks.',
       publishedDate: new Date('2023-11-15'),
-      author: 'Lee Boonstra'
+      author: 'Lee Boonstra',
+      category: 'technology',
     },
     {
       id: '2',
       title: 'Human-AI Collaboration Patterns',
-      shortDescription: 'How to code faster with an AI pair programmer.',
-      content: 'Modern development tools like GitHub Copilot enable fluid cooperation between developer and assistant. Learn how to delegate repetitive tasks and keep control of logic.',
+      shortDescription: 'How to ship faster with AI pair programmers and guardrails.',
+      content: 'Modern development tools like GitHub Copilot enable fluid cooperation between developer and assistant. Learn how to delegate repetitive tasks, keep control of logic, and set business guardrails for safe delivery.',
       publishedDate: new Date('2024-01-10'),
-      author: 'Francesco Bertani'
+      author: 'Francesco Bertani',
+      category: 'business',
     },
     {
       id: '3',
@@ -22,7 +24,8 @@ const initialState = {
       shortDescription: 'Avoid common mistakes when working with LLMs.',
       content: 'From few-shot examples to output format specification, this guide helps engineers design high-quality prompts for language models.',
       publishedDate: new Date('2024-03-22'),
-      author: 'Albert Ziegler'
+      author: 'Albert Ziegler',
+      category: 'technology',
     },
     {
       id: '4',
@@ -30,7 +33,8 @@ const initialState = {
       shortDescription: 'What software engineers should expect from AI.',
       content: 'Generative AI shifts focus from syntax to solution design. Developers now orchestrate intelligent agents, not just write loops.',
       publishedDate: new Date('2024-05-05'),
-      author: 'Accenture Research Team'
+      author: 'Accenture Research Team',
+      category: 'news',
     },
     {
       id: '5',
@@ -38,7 +42,8 @@ const initialState = {
       shortDescription: 'A real-world case of coding with AI.',
       content: 'See how a developer used ChatGPT to build a full-stack app, from planning to deployment. Includes sample prompts and code reviews.',
       publishedDate: new Date('2024-06-12'),
-      author: 'Elena Mendez'
+      author: 'Elena Mendez',
+      category: 'technology',
     },
     {
       id: '6',
@@ -46,7 +51,8 @@ const initialState = {
       shortDescription: 'Let AI help you catch bugs and suggest improvements.',
       content: 'Tools like Cody and Amazon CodeWhisperer can flag security issues and refactor suggestions before you hit merge.',
       publishedDate: new Date('2024-07-03'),
-      author: 'Nathan Tran'
+      author: 'Nathan Tran',
+      category: 'news',
     },
     {
       id: '7',
@@ -54,7 +60,8 @@ const initialState = {
       shortDescription: 'Automate tedious docs with natural language models.',
       content: 'From OpenAPI files to Markdown guides, GPT-based tools can help document your API faster and more clearly.',
       publishedDate: new Date('2024-08-17'),
-      author: 'Priya Kumar'
+      author: 'Priya Kumar',
+      category: 'business',
     },
     {
       id: '8',
@@ -62,16 +69,63 @@ const initialState = {
       shortDescription: 'Make legacy code readable again.',
       content: 'Legacy systems benefit from AI-assisted refactoring tools. Learn how GPT models help modernize, extract components, and rename intelligently.',
       publishedDate: new Date('2024-09-28'),
-      author: 'Lars Becker'
+      author: 'Lars Becker',
+      category: 'technology',
     },
     {
       id: '9',
       title: 'From Assistant to Co-Creator',
       shortDescription: 'Is AI just a tool or a teammate?',
-      content: 'This article explores the philosophical and practical boundaries of AI in software design. When should you trust it—and when to intervene?',
+      content: 'This article explores the philosophical and practical boundaries of AI in software design. When should you trust it - and when to intervene?',
       publishedDate: new Date('2024-10-19'),
-      author: 'Mei Lin'
-    }
+      author: 'Mei Lin',
+      category: 'news',
+    },
+    {
+      id: '10',
+      title: "Why Women's Football Is Booming",
+      shortDescription: "Sponsorships, tactics, and stars that lift the women's game.",
+      content: "We break down the investments, grassroots programs, and tactical shifts that fuel the rapid growth of women's football across Europe.",
+      publishedDate: new Date('2024-04-09'),
+      author: 'Sara Nowak',
+      category: 'sport',
+    },
+    {
+      id: '11',
+      title: 'Cannes Highlights: Indie Gems',
+      shortDescription: 'Small-budget films that stole the show on the Croisette.',
+      content: 'From bold debuts to veteran auteurs, this recap spotlights festival titles you will want to watch before awards season heats up.',
+      publishedDate: new Date('2024-05-29'),
+      author: 'Dario Leone',
+      category: 'movies',
+    },
+    {
+      id: '12',
+      title: 'Workcation Guide: Lisbon vs. Barcelona',
+      shortDescription: 'Sun, coworking, coffee - where remote workers thrive most.',
+      content: 'A practical comparison of neighborhoods, internet quality, visas, and weekend escapes for remote professionals choosing between Lisbon and Barcelona.',
+      publishedDate: new Date('2024-02-18'),
+      author: 'Marta Silva',
+      category: 'travel',
+    },
+    {
+      id: '13',
+      title: 'Building a Zero-Waste Kitchen',
+      shortDescription: 'Starter tips to cut packaging, save money, and eat better.',
+      content: 'Learn how to set up refill stations, plan flexible meal prep, and swap common single-use items for durable alternatives without breaking the bank.',
+      publishedDate: new Date('2024-03-05'),
+      author: 'Noah Patel',
+      category: 'food',
+    },
+  ],
+  categories: [
+    { id: 'sport', name: 'Sport' },
+    { id: 'news', name: 'News' },
+    { id: 'movies', name: 'Movies' },
+    { id: 'technology', name: 'Technology' },
+    { id: 'business', name: 'Business' },
+    { id: 'travel', name: 'Travel' },
+    { id: 'food', name: 'Food' },
   ],
 };
 

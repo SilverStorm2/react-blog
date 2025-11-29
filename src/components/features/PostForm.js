@@ -1,8 +1,10 @@
 import { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import Editor from '../common/Editor';
+import { getAllCategories } from '../../categoriesRedux';
 
 const normalizeDate = value => {
   if (!value) return null;
@@ -20,8 +22,10 @@ const PostForm = ({ action, actionText, ...props }) => {
     publishedDate: initialPublishedDate = null,
     shortDescription: initialShortDescription = '',
     content: initialContent = '',
+    category: initialCategory = '',
   } = props;
 
+  const categories = useSelector(getAllCategories);
   const [title, setTitle] = useState(initialTitle);
   const [author, setAuthor] = useState(initialAuthor);
   const [publishedDate, setPublishedDate] = useState(() =>
@@ -30,9 +34,13 @@ const PostForm = ({ action, actionText, ...props }) => {
   const [shortDescription, setShortDescription] = useState(
     initialShortDescription
   );
+  const [category, setCategory] = useState(
+    initialCategory || categories[0]?.id || ''
+  );
   const [content, setContent] = useState(initialContent);
   const [contentError, setContentError] = useState(false);
   const [dateError, setDateError] = useState(false);
+  const [categoryError, setCategoryError] = useState(false);
   const quillRef = useRef(null);
   const {
     register,
@@ -81,6 +89,9 @@ const PostForm = ({ action, actionText, ...props }) => {
       message: 'Short description is too short (min is 20)',
     },
   });
+  const categoryRegister = register('category', {
+    required: 'Category is required',
+  });
 
   const handleSubmit = () => {
     const editorHtml = quillRef.current
@@ -92,11 +103,13 @@ const PostForm = ({ action, actionText, ...props }) => {
 
     const isContentValid = plainContent !== '';
     const isDateValid = Boolean(publishedDate);
+    const isCategoryValid = Boolean(category);
 
     setContentError(!isContentValid);
     setDateError(!isDateValid);
+    setCategoryError(!isCategoryValid);
 
-    if (!isContentValid || !isDateValid) return;
+    if (!isContentValid || !isDateValid || !isCategoryValid) return;
 
     const payload = {
       title: title.trim(),
@@ -104,6 +117,7 @@ const PostForm = ({ action, actionText, ...props }) => {
       publishedDate,
       shortDescription: shortDescription.trim(),
       content: editorHtml.trim(),
+      category,
     };
 
     action(payload);
@@ -125,6 +139,30 @@ const PostForm = ({ action, actionText, ...props }) => {
         {errors.title && (
           <small className="d-block form-text text-danger mt-2">
             {errors.title.message}
+          </small>
+        )}
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="postFormCategory">
+        <Form.Label>Category</Form.Label>
+        <Form.Select
+          {...categoryRegister}
+          value={category}
+          onChange={e => {
+            categoryRegister.onChange?.(e);
+            setCategory(e.target.value);
+            if (categoryError) setCategoryError(false);
+          }}
+        >
+          <option value="">Select category</option>
+          {categories.map(item => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </Form.Select>
+        {(errors.category || categoryError) && (
+          <small className="d-block form-text text-danger mt-2">
+            Category is required
           </small>
         )}
       </Form.Group>
@@ -208,6 +246,7 @@ PostForm.propTypes = {
   ]),
   shortDescription: PropTypes.string,
   content: PropTypes.string,
+  category: PropTypes.string,
 };
 
 export default PostForm;

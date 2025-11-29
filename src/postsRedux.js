@@ -2,6 +2,8 @@
 export const getAllPosts = ({ posts }) => posts;
 export const getPostById = ({ posts }, id) =>
   posts.find(post => post.id === id);
+export const getPostsByCategory = ({ posts }, categoryId) =>
+  posts.filter(post => post.category === categoryId);
 
 // actions
 const createActionName = actionName => `app/posts/${actionName}`;
